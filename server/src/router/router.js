@@ -29,18 +29,23 @@ router.get("/verify", verify, (req, res) => {
 });
 
 router.get("/", verify, async (req, res) => {
-  (await db)
-    .query(
-      "SELECT user_id, user_name, user_email, user_profile FROM users WHERE user_id = ?",
-      [req.userID]
-    )
-    .then((ms) => {
-      if (ms[0].length < 1) {
-        return res.json({ log: false, message: "insertion error" });
-      } else {
-        res.json({ log: true, data: ms[0][0] });
-      }
-    });
+  try {
+    (await db)
+      .query("SELECT * FROM contacts WHERE user_id = ?", [req.userID])
+      .then((ms) => {
+        if (ms[0].length < 1) {
+          return res.json({ message: "insertion error" });
+        } else {
+          if (ms[0].length < 1) {
+            res.json({ one: false });
+          } else {
+            res.json({ one: true, data: ms[0] });
+          }
+        }
+      });
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 router.post("/register", async (req, res) => {
@@ -125,6 +130,53 @@ router.post("/add", verify, async (req, res) => {
         res.json({ ok: true });
       }
     });
+});
+
+router.get("/view/:id", async (req, res) => {
+  const contactId = req.params.id;
+
+  const myReq = (await db)
+    .query("SELECT * FROM contacts WHERE contact_id = ?", [contactId])
+    .then((ms) => {
+      res.json({ data: ms[0] });
+    });
+});
+
+router.patch("/edit", async (req, res) => {
+  try {
+    const { ctcID, name, lastname, email, number, description } = req.body;
+    await (await db)
+      .query(
+        "UPDATE contacts SET contact_name = ?, contact_lastname = ?, contact_email = ?, contact_number = ?, contact_description = ? WHERE contact_id = ?",
+        [name, lastname, email, number, description, ctcID]
+      )
+      .then((ms) => {
+        if (ms[0].affectedRows == 1) {
+          res.json({ ok: true });
+        } else {
+          res.json({ ok: false });
+        }
+      });
+  } catch (error) {
+    res.json({ error });
+  }
+});
+
+router.delete("/del/:id", async (req, res) => {
+  try {
+    const contactID = req.params.id;
+    const myREq = await (await db)
+      .query("DELETE FROM contacts WHERE contact_id = ?", [contactID])
+      .then((ms) => {
+        if (ms[0].affectedRows == 1) {
+          res.json({ ok: true });
+        } else {
+          res.json({ ok: false });
+        }
+      });
+  } catch (error) {
+    res.json({ error });
+  }
 });
 
 export default router;

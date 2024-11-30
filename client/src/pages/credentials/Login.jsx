@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
 function Login() {
@@ -63,7 +63,7 @@ function Login() {
         <button type="submit">Log in</button>
       </form>
       <p>
-        Don't you have an account yet? <Link to={"/register"}>Log in</Link>
+        Don't you have an account yet? <Link to={"/register"}>Register</Link>
       </p>
     </div>
   );

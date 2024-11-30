@@ -1,32 +1,44 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import Contact from "../components/Contact";
+import { Link } from "react-router-dom";
 
 function Mini() {
-  const [user, setUser] = useState({});
-
-  const navigate = useNavigate();
+  const [contacts, setContacts] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    fetch("http://localhost:3000", {
+    fetch("http://localhost:3000/", {
       method: "GET",
       headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
         Authorization: `${token}`,
       },
     })
-      .then((res) => res.json())
-      .then((ms) => {
-        if (ms.log) {
-          setUser(ms.data);
+      .then((ms) => ms.json())
+      .then((res) => {
+        if (!res.one) {
+          setContacts(null);
         } else {
-          navigate("/login");
+          setContacts(res.data);
         }
       });
   }, []);
 
   return (
-    <div>
-      <h1>{user["user_name"]}</h1>
+    <div className="all_contacts">
+      {!contacts ? (
+        <div className="no">
+          <h1>No Contacts yet</h1>
+          <Link to={"/add"}>Add a contact</Link>
+        </div>
+      ) : (
+        <>
+          {contacts.map((contact) => {
+            return <Contact key={contact["contact_id"]} contact={contact} />;
+          })}
+        </>
+      )}
     </div>
   );
 }
