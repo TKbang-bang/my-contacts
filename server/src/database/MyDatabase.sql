@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS contacts(
     user_id VARCHAR(120),
     contact_name VARCHAR(60),
     contact_lastname VARCHAR(70),
-    conact_number VARCHAR(30),
+    contact_number VARCHAR(30),
     contact_email VARCHAR(100),
     contact_description TEXT,
     PRIMARY KEY(contact_id)
