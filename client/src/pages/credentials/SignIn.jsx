@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
 
-function Login() {
+function SignIn() {
   const [see, setSee] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -21,29 +22,20 @@ function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetch("http://localhost:3000/login", {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-      body: JSON.stringify({ email, password }),
-    })
-      .then((ms) => ms.json())
-      .then((ms2) => {
-        if (ms2.log) {
-          const token = `barear ${ms2.token}`;
-          localStorage.setItem("token", token);
+    axios
+      .post("http://localhost:3000/signin", { email, password })
+      .then((response) => {
+        if (response.data.log) {
           navigate("/");
         } else {
-          return;
+          console.log(response.data);
         }
       });
   };
 
   return (
     <div className="register">
-      <h1>Log in</h1>
+      <h1>Sign in</h1>
       <form onSubmit={handleSubmit}>
         <input
           type="email"
@@ -60,13 +52,13 @@ function Login() {
           />
           <label onClick={handleSee}>{see ? "Hide" : "See"}</label>
         </div>
-        <button type="submit">Log in</button>
+        <button type="submit">Sign in</button>
       </form>
       <p>
-        Don't you have an account yet? <Link to={"/register"}>Register</Link>
+        Don't you have an account yet? <Link to={"/signup"}>Sign up</Link>
       </p>
     </div>
   );
 }
 
-export default Login;
+export default SignIn;

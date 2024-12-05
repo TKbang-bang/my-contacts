@@ -1,7 +1,8 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-function Register() {
+function SignUp() {
   const [see, setSee] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -22,19 +23,10 @@ function Register() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetch("http://localhost:3000/register", {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-      body: JSON.stringify({ name, email, password }),
-    })
-      .then((ms) => ms.json())
-      .then((ms2) => {
-        if (ms2.log) {
-          const token = `barear ${ms2.token}`;
-          localStorage.setItem("token", token);
+    axios
+      .post("http://localhost:3000/signup", { name, email, password })
+      .then((res) => {
+        if (res.data.log) {
           navigate("/");
         } else {
           return;
@@ -44,7 +36,7 @@ function Register() {
 
   return (
     <div className="register">
-      <h1>Register</h1>
+      <h1>Sign up</h1>
       <form onSubmit={handleSubmit}>
         <input
           type="text"
@@ -67,13 +59,13 @@ function Register() {
           />
           <label onClick={handleSee}>{see ? "Hide" : "See"}</label>
         </div>
-        <button type="submit">Register</button>
+        <button type="submit">Sign up</button>
       </form>
       <p>
-        Do you already have an account? <Link to={"/login"}>Log in</Link>
+        Do you already have an account? <Link to={"/signin"}>Sign in</Link>
       </p>
     </div>
   );
 }
 
-export default Register;
+export default SignUp;

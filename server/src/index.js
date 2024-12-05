@@ -1,6 +1,9 @@
-import express from "express";
-import cors from "cors";
-import router from "./router/router.js";
+const express = require("express");
+const cors = require("cors");
+const router = require("./router/router.js");
+const session = require("express-session");
+const sessionStore = require("./mysqlStore.js");
+const mySecret = crypto.randomUUID();
 
 //  MY APP
 const app = express();
@@ -10,7 +13,24 @@ app.set("port", process.env.PORT || 3000);
 
 //  MIDLEWARES
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "PATCH", "DELETE"],
+    credentials: true,
+  })
+);
+
+//    COOKIES
+app.use(
+  session({
+    key: "user_cookie",
+    secret: mySecret,
+    store: sessionStore,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 //  ROUTER
 app.use(router);

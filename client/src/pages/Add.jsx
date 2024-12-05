@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -9,48 +10,30 @@ function Add() {
   const [description, setDescription] = useState("");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    fetch("http://localhost:3000/verify", {
-      method: "GET",
-      headers: {
-        Authorization: `${token}`,
-      },
-    })
-      .then((ms) => ms.json())
-      .then((res) => {
-        if (!res.log) {
-          navigate("/login");
-        }
-      });
-  }, []);
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    const token = localStorage.getItem("token");
-    fetch("http://localhost:3000/add", {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: `${token}`,
-      },
-      method: "POST",
-      body: JSON.stringify({
-        name,
-        lastname,
-        email,
-        number,
-        description: description.toString(),
-      }),
-    })
-      .then((ms) => ms.json())
-      .then((res) => {
-        if (!res.ok) {
-          console.log(res.message);
-        } else {
-          navigate("/");
-        }
-      });
+    try {
+      const token = localStorage.getItem("token");
+      axios
+        .post(
+          "http://localhost:3000/add",
+          { name, lastname, email, number, description },
+          {
+            headers: {
+              Authorization: `${token}`,
+            },
+          }
+        )
+        .then((res) => {
+          if (!res.data.ok) {
+            console.log(res.data.message);
+          } else {
+            navigate("/");
+          }
+        });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

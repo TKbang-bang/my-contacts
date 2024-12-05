@@ -1,39 +1,36 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import Home from "./pages/Home";
-import Register from "./pages/credentials/Register";
-import Login from "./pages/credentials/Login.jsx";
 import View from "./pages/View.jsx";
 import Edit from "./pages/Edit.jsx";
+import axios from "axios";
+import SignUp from "./pages/credentials/SignUp.jsx";
+import SignIn from "./pages/credentials/SignIn.jsx";
 
 function App() {
+  const [contacts, setContcats] = useState([]);
   const navigate = useNavigate();
+  axios.defaults.withCredentials = true;
 
+  //  CHECKING IF THE USER IS LOG
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    fetch("http://localhost:3000/verify", {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: `${token}`,
-      },
-    })
-      .then((ms) => ms.json())
-      .then((res) => {
-        if (res.log) {
-          return;
-        } else {
-          navigate("/login");
+    try {
+      axios.get("http://localhost:3000/verify").then((res) => {
+        if (!res.data.log) {
+          if (window.location != "http://localhost:5173/signup")
+            navigate("/signin");
         }
       });
+    } catch (error) {
+      console.log(error);
+    }
   });
 
   return (
     <div className="container">
       <Routes>
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/signin" element={<SignIn />} />
         <Route path="/view/:id" element={<View />} />
         <Route path="/edit/:id" element={<Edit />} />
         <Route path="*" element={<Home />} />

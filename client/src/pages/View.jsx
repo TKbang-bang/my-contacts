@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -5,12 +6,15 @@ function View() {
   const [data, setData] = useState({});
   const contactId = useParams();
 
+  //   TAKING THE CONTACT FROM THE SERVER BASED ON PARAMS
   useEffect(() => {
-    fetch(`http://localhost:3000/view/${contactId.id}`)
-      .then((res) => res.json())
-      .then((ms) => {
-        setData(ms.data[0]);
+    try {
+      axios.get(`http://localhost:3000/view/${contactId.id}`).then((res) => {
+        setData(res.data.result[0]);
       });
+    } catch (error) {
+      console.log(error);
+    }
   }, []);
 
   return (
@@ -22,7 +26,7 @@ function View() {
           {data["contact_name"] ? (
             <h3>{data["contact_name"]}</h3>
           ) : (
-            <h3 className="nothing">No name...</h3>
+            <h3 className="nothing">NULL...</h3>
           )}
         </div>
         <div>
@@ -30,7 +34,7 @@ function View() {
           {data["contact_lastname"] ? (
             <h3>{data["contact_lastname"]}</h3>
           ) : (
-            <h3 className="nothing">No lastname...</h3>
+            <h3 className="nothing">NULL...</h3>
           )}
         </div>
         <div>
@@ -38,7 +42,7 @@ function View() {
           {data["contact_email"] ? (
             <h3>{data["contact_email"]}</h3>
           ) : (
-            <h3 className="nothing">No email...</h3>
+            <h3 className="nothing">NULL...</h3>
           )}
         </div>
         <div>
@@ -46,7 +50,7 @@ function View() {
           {data["contact_number"] ? (
             <h3>{data["contact_number"]}</h3>
           ) : (
-            <h3 className="nothing">No number...</h3>
+            <h3 className="nothing">NULL...</h3>
           )}
         </div>
         <div>
@@ -54,7 +58,7 @@ function View() {
           {data["contact_description"] ? (
             <h4>{data["contact_description"]}</h4>
           ) : (
-            <h3 className="nothing">No description...</h3>
+            <h3 className="nothing">NULL...</h3>
           )}
         </div>
       </div>

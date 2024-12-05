@@ -1,52 +1,50 @@
+import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 function Edit() {
-  const [data, setData] = useState({});
-  const [name, setName] = useState(data["contact_name"]);
-  const [lastname, setLastname] = useState(data["contact_lastname"]);
-  const [email, setEmail] = useState(data["contact_email"]);
-  const [number, setNumber] = useState(data["contact_number"]);
-  const [description, setDescription] = useState(data["contact_description"]);
+  const [name, setName] = useState("");
+  const [lastname, setLastname] = useState("");
+  const [email, setEmail] = useState("");
+  const [number, setNumber] = useState("");
+  const [description, setDescription] = useState("");
   const navigate = useNavigate();
 
   const contactId = useParams();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetch(`http://localhost:3000/edit`, {
-      method: "PATCH",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        ctcID: contactId.id,
-        name,
-        lastname,
-        email,
-        number,
-        description,
-      }),
-    })
-      .then((ms) => ms.json())
-      .then((res) => {
-        res.ok ? navigate("/") : console.log("Try again");
-        // console.log(res);
-      });
+    try {
+      axios
+        .patch("http://localhost:3000/edit", {
+          ctcID: contactId.id,
+          name,
+          lastname,
+          email,
+          number,
+          description,
+        })
+        .then((res) => {
+          res.data.ok ? navigate("/") : console.log("Try again");
+        });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
+  //   TAKING THE FIELDS INFORMATIONS FROM SERVER
   useEffect(() => {
-    fetch(`http://localhost:3000/view/${contactId.id}`)
-      .then((res) => res.json())
-      .then((ms) => {
-        setName(ms.data[0]["contact_name"]);
-        setLastname(ms.data[0]["contact_lastname"]);
-        setEmail(ms.data[0]["contact_email"]);
-        setNumber(ms.data[0]["contact_number"]);
-        setDescription(ms.data[0]["contact_description"]);
-        // setData(ms.data[0]);
+    try {
+      axios.get(`http://localhost:3000/view/${contactId.id}`).then((ms) => {
+        setName(ms.data.result[0]["contact_name"]);
+        setLastname(ms.data.result[0]["contact_lastname"]);
+        setEmail(ms.data.result[0]["contact_email"]);
+        setNumber(ms.data.result[0]["contact_number"]);
+        setDescription(ms.data.result[0]["contact_description"]);
       });
+    } catch (error) {
+      console.log(error);
+    }
   }, []);
 
   return (
