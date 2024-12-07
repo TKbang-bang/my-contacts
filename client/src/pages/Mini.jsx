@@ -6,11 +6,10 @@ import axios from "axios";
 function Mini() {
   const [contacts, setContacts] = useState([]);
 
-  //  VERIFYING IF THE USER HAS ALREADY SOME CONTACTS
+  //  IMPORTING THE CONTACTS
   useEffect(() => {
-    //  SENDING THE TOKEN TO VERIFY THE USER_ID
     try {
-      axios.get("http://localhost:3000/").then((res) => {
+      axios.get(import.meta.env.VITE_BACKEND_URL).then((res) => {
         if (!res.data.one) {
           setContacts(null);
         } else {

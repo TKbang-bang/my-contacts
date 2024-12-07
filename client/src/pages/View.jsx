@@ -9,9 +9,11 @@ function View() {
   //   TAKING THE CONTACT FROM THE SERVER BASED ON PARAMS
   useEffect(() => {
     try {
-      axios.get(`http://localhost:3000/view/${contactId.id}`).then((res) => {
-        setData(res.data.result[0]);
-      });
+      axios
+        .get(import.meta.env.VITE_BACKEND_URL + `view/${contactId.id}`)
+        .then((res) => {
+          setData(res.data.result[0]);
+        });
     } catch (error) {
       console.log(error);
     }

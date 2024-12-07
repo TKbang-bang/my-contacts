@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
@@ -8,6 +8,7 @@ function SignIn() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  //  FUNCTION TO SEE THE PASSWORD
   const handleSee = () => {
     if (!see) {
       document.querySelector(".container .register form div input").type =
@@ -23,12 +24,12 @@ function SignIn() {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:3000/signin", { email, password })
+      .post(import.meta.env.VITE_BACKEND_URL + "signin", { email, password })
       .then((response) => {
         if (response.data.log) {
           navigate("/");
         } else {
-          console.log(response.data);
+          return;
         }
       });
   };

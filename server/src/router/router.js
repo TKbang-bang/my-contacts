@@ -92,19 +92,38 @@ router.post("/signin", async (req, res) => {
 
 router.post("/add", async (req, res) => {
   try {
+    const newContactID = crypto.randomUUID();
     const { name, lastname, email, number, description } = req.body;
 
+    // console.table({
+    //   name,
+    //   lastname,
+    //   email,
+    //   number,
+    //   description,
+    //   userID: req.session.userID,
+    //   newContactID,
+    // });
     const [result] = await (
       await db
     ).query(
-      "INSERT INTO contacts (user_id, contact_name, contact_lastname, contact_email, contact_number, contact_description) VALUES (?,?,?,?,?,?)",
-      [req.session.userID, name, lastname, email, number, description]
+      "INSERT INTO contacts (contact_id, user_id, contact_name, contact_lastname, contact_email, contact_number, contact_description) VALUES (?,?,?,?,?,?,?)",
+      [
+        newContactID,
+        req.session.userID,
+        name,
+        lastname,
+        email,
+        number,
+        description,
+      ]
     );
     if (result.affectedRows > 0) {
       res.json({ ok: true });
     } else {
       res.json({ ok: false });
     }
+    console.log(result);
   } catch (error) {
     return res.json({ error, message: "Server error" });
   }
@@ -164,6 +183,15 @@ router.delete("/del/:id", async (req, res) => {
     }
   } catch (error) {
     return res.json({ error, message: "Server error" });
+  }
+});
+
+router.delete("/logout", (req, res) => {
+  if (req.session.userID) {
+    req.session.destroy();
+    res.json({ out: true });
+  } else {
+    res.json({ out: false, message: "Try again" });
   }
 });
 

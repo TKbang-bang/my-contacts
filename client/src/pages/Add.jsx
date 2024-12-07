@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Add() {
@@ -13,20 +13,17 @@ function Add() {
   const handleSubmit = (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem("token");
       axios
-        .post(
-          "http://localhost:3000/add",
-          { name, lastname, email, number, description },
-          {
-            headers: {
-              Authorization: `${token}`,
-            },
-          }
-        )
+        .post(import.meta.env.VITE_BACKEND_URL + "add", {
+          name,
+          lastname,
+          email,
+          number,
+          description,
+        })
         .then((res) => {
           if (!res.data.ok) {
-            console.log(res.data.message);
+            console.log(res.data);
           } else {
             navigate("/");
           }

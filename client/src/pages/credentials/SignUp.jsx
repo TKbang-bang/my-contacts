@@ -9,6 +9,7 @@ function SignUp() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  //  FUNCTION TO SEE THE PASSWORD
   const handleSee = () => {
     if (!see) {
       document.querySelector(".container .register form div input").type =
@@ -24,7 +25,11 @@ function SignUp() {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:3000/signup", { name, email, password })
+      .post(import.meta.env.VITE_BACKEND_URL + "signup", {
+        name,
+        email,
+        password,
+      })
       .then((res) => {
         if (res.data.log) {
           navigate("/");

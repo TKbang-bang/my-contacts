@@ -16,7 +16,7 @@ function Edit() {
     e.preventDefault();
     try {
       axios
-        .patch("http://localhost:3000/edit", {
+        .patch(import.meta.env.VITE_BACKEND_URL + "edit", {
           ctcID: contactId.id,
           name,
           lastname,
@@ -35,13 +35,15 @@ function Edit() {
   //   TAKING THE FIELDS INFORMATIONS FROM SERVER
   useEffect(() => {
     try {
-      axios.get(`http://localhost:3000/view/${contactId.id}`).then((ms) => {
-        setName(ms.data.result[0]["contact_name"]);
-        setLastname(ms.data.result[0]["contact_lastname"]);
-        setEmail(ms.data.result[0]["contact_email"]);
-        setNumber(ms.data.result[0]["contact_number"]);
-        setDescription(ms.data.result[0]["contact_description"]);
-      });
+      axios
+        .get(import.meta.env.VITE_BACKEND_URL + `view/${contactId.id}`)
+        .then((ms) => {
+          setName(ms.data.result[0]["contact_name"]);
+          setLastname(ms.data.result[0]["contact_lastname"]);
+          setEmail(ms.data.result[0]["contact_email"]);
+          setNumber(ms.data.result[0]["contact_number"]);
+          setDescription(ms.data.result[0]["contact_description"]);
+        });
     } catch (error) {
       console.log(error);
     }

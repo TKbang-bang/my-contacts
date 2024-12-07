@@ -8,12 +8,13 @@ CREATE TABLE IF NOT EXISTS users(
 );
 
 CREATE TABLE IF NOT EXISTS contacts(
-	contact_id INT NOT NULL,
+	contact_id VARCHAR(120) NOT NULL,
     user_id VARCHAR(120),
     contact_name VARCHAR(60),
     contact_lastname VARCHAR(70),
     contact_number VARCHAR(30),
     contact_email VARCHAR(100),
     contact_description TEXT,
-    PRIMARY KEY(contact_id)
+    PRIMARY KEY(contact_id),
+    FOREIGN KEY(user_id) REFERENCES users(user_id)
 );
